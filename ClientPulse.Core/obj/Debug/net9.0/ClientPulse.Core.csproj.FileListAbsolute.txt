@@ -1,0 +1,13 @@
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\bin\Debug\net9.0\ClientPulse.Core.deps.json
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\bin\Debug\net9.0\ClientPulse.Core.dll
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\bin\Debug\net9.0\ClientPulse.Core.pdb
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.csproj.AssemblyReference.cache
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.AssemblyInfoInputs.cache
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.AssemblyInfo.cs
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.csproj.CoreCompileInputs.cache
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.sourcelink.json
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.dll
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\refint\ClientPulse.Core.dll
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ClientPulse.Core.pdb
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Core\obj\Debug\net9.0\ref\ClientPulse.Core.dll
