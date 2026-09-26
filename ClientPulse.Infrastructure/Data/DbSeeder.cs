@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClientPulse.Core.Entities;
 using ClientPulse.Core.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ClientPulse.Infrastructure.Data;
@@ -13,9 +14,31 @@ public static class DbSeeder
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await context.Database.EnsureCreatedAsync();
 
-        // Check if database has been seeded
+        // For PostgreSQL (Supabase), tables must be created manually via SQL Editor.
+        // EnsureCreatedAsync is skipped to avoid crashing if tables don't exist yet.
+        if (context.Database.IsNpgsql())
+        {
+            try
+            {
+                // Check if database has been seeded
+                if (context.Clients.Any())
+                    return;
+            }
+            catch
+            {
+                // Tables don't exist yet — Supabase SQL schema not applied yet.
+                // Run the supabase_schema.sql in Supabase SQL Editor first.
+                Console.WriteLine("[DbSeeder] Supabase tablolar henuz olusturulmamis. supabase_schema.sql dosyasini Supabase SQL Editor'da calistirin.");
+                return;
+            }
+        }
+        else
+        {
+            await context.Database.EnsureCreatedAsync();
+        }
+
+        // Check if database has been seeded (SQLite path)
         if (context.Clients.Any())
         {
             return;

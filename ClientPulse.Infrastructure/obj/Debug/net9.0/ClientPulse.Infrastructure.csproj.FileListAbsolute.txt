@@ -14,3 +14,5 @@ D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientP
 D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Infrastructure\obj\Debug\net9.0\refint\ClientPulse.Infrastructure.dll
 D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Infrastructure\obj\Debug\net9.0\ClientPulse.Infrastructure.pdb
 D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Infrastructure\obj\Debug\net9.0\ref\ClientPulse.Infrastructure.dll
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Infrastructure\bin\Debug\net9.0\ClientPulse.Infrastructure.runtimeconfig.json
+D:\Müşteri, Hizmet & Düzenli Fatura Yönetim Paneli (Freelance  SaaS)\ClientPulse.Infrastructure\obj\Debug\net9.0\ClientPulse.Infrastructure.genruntimeconfig.cache
