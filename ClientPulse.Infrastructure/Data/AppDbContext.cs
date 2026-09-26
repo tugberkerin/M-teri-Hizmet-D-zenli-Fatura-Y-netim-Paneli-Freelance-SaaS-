@@ -19,11 +19,14 @@ public class AppDbContext : DbContext, IAppDbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        // Optimistic Locking using PostgreSQL xmin (mapped to Version property)
-        modelBuilder.Entity<Client>().Property(x => x.Version).IsRowVersion();
-        modelBuilder.Entity<Service>().Property(x => x.Version).IsRowVersion();
-        modelBuilder.Entity<Invoice>().Property(x => x.Version).IsRowVersion();
-        modelBuilder.Entity<UptimeMonitor>().Property(x => x.Version).IsRowVersion();
+        // Optimistic Locking using PostgreSQL xmin (only when using Npgsql)
+        if (Database.IsNpgsql())
+        {
+            modelBuilder.Entity<Client>().Property(x => x.Version).IsRowVersion();
+            modelBuilder.Entity<Service>().Property(x => x.Version).IsRowVersion();
+            modelBuilder.Entity<Invoice>().Property(x => x.Version).IsRowVersion();
+            modelBuilder.Entity<UptimeMonitor>().Property(x => x.Version).IsRowVersion();
+        }
         
         // Optional constraints and relations config
         modelBuilder.Entity<Client>()

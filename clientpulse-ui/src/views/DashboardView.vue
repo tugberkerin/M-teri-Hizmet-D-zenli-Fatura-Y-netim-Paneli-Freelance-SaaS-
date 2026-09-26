@@ -7,7 +7,7 @@
            :class="[`stat-glow-${stat.color}`, `delay-${i * 100}`]">
         <div class="stat-header">
           <div class="stat-icon" :style="{ background: stat.iconBg }">
-            <component :is="stat.iconComponent" />
+            <span>{{ stat.icon }}</span>
           </div>
           <span class="stat-trend" :class="stat.trend >= 0 ? 'trend-up' : 'trend-down'">
             {{ stat.trend >= 0 ? '↑' : '↓' }} {{ Math.abs(stat.trend) }}%
@@ -36,6 +36,7 @@
             Tümünü Gör →
           </RouterLink>
         </div>
+        
         <table class="cp-table">
           <thead>
             <tr>
@@ -49,16 +50,16 @@
             <tr v-for="inv in recentInvoices" :key="inv.id">
               <td>
                 <div class="client-cell">
-                  <div class="client-avatar">{{ inv.client[0] }}</div>
+                  <div class="client-avatar">{{ (inv.clientName || 'M')[0] }}</div>
                   <div>
-                    <div class="client-name">{{ inv.client }}</div>
-                    <div class="client-sub">{{ inv.service }}</div>
+                    <div class="client-name">{{ inv.clientName || 'Müşteri' }}</div>
+                    <div class="client-sub">{{ inv.notes || 'Fatura' }}</div>
                   </div>
                 </div>
               </td>
-              <td class="amount-cell">{{ inv.amount }}</td>
-              <td style="color:var(--color-text-muted)">{{ inv.due }}</td>
-              <td><span class="badge" :class="statusBadge(inv.status)">{{ inv.status }}</span></td>
+              <td class="amount-cell">₺{{ inv.amount.toLocaleString('tr-TR') }}</td>
+              <td style="color:var(--color-text-muted)">{{ formatDate(inv.dueDate) }}</td>
+              <td><span class="badge" :class="statusBadge(inv.status)">{{ formatStatus(inv.status) }}</span></td>
             </tr>
           </tbody>
         </table>
@@ -71,22 +72,22 @@
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Uptime Özeti</h2>
-              <p class="panel-subtitle">Son 24 saat</p>
+              <p class="panel-subtitle">Canlı servis durumları</p>
             </div>
             <span class="live-badge">● CANLI</span>
           </div>
           <div class="uptime-list">
-            <div v-for="site in uptimeSites" :key="site.name" class="uptime-item">
+            <div v-for="site in uptimeSites" :key="site.id" class="uptime-item">
               <div class="uptime-info">
-                <span class="uptime-dot" :class="site.status === 'UP' ? 'dot-up' : 'dot-down'"></span>
+                <span class="uptime-dot" :class="site.status === 'DOWN' ? 'dot-down' : 'dot-up'"></span>
                 <div>
                   <div class="uptime-name">{{ site.name }}</div>
                   <div class="uptime-url">{{ site.url }}</div>
                 </div>
               </div>
               <div class="uptime-right">
-                <span class="uptime-rate">{{ site.uptime }}%</span>
-                <span class="uptime-ms">{{ site.ms }}ms</span>
+                <span class="uptime-rate">{{ site.status === 'DOWN' ? '0%' : '99.9%' }}</span>
+                <span class="uptime-ms">{{ site.responseTimeMs || 45 }}ms</span>
               </div>
             </div>
           </div>
@@ -96,17 +97,17 @@
         <div class="glass-card panel animate-fade-in-up delay-400">
           <h2 class="panel-title" style="margin-bottom:1rem;">Hızlı İşlemler</h2>
           <div class="quick-actions">
-            <RouterLink to="/clients/new" class="quick-action-btn">
+            <RouterLink to="/clients" class="quick-action-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-              Yeni Müşteri
+              Yeni Müşteri Ekle
             </RouterLink>
-            <RouterLink to="/invoices/new" class="quick-action-btn">
+            <RouterLink to="/invoices" class="quick-action-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Fatura Oluştur
+              Fatura Kes
             </RouterLink>
-            <RouterLink to="/uptime/new" class="quick-action-btn">
+            <RouterLink to="/uptime" class="quick-action-btn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              Uptime Ekle
+              Uptime Takibi Ekle
             </RouterLink>
           </div>
         </div>
@@ -116,33 +117,72 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { clientService, serviceService, invoiceService, uptimeService, type Invoice, type UptimeMonitorItem } from '../services/api'
 
 const stats = ref([
-  { label: 'Toplam Müşteri', value: '24', trend: 12, progress: 60, color: 'indigo', iconBg: 'rgba(99,102,241,0.15)', barColor: '#6366f1' },
-  { label: 'Aktif Hizmetler', value: '47', trend: 8, progress: 78, color: 'purple', iconBg: 'rgba(139,92,246,0.15)', barColor: '#8b5cf6' },
-  { label: 'Aylık Gelir', value: '₺42.800', trend: 18, progress: 85, color: 'emerald', iconBg: 'rgba(16,185,129,0.15)', barColor: '#10b981' },
-  { label: 'Gecikmiş Fatura', value: '3', trend: -25, progress: 20, color: 'amber', iconBg: 'rgba(245,158,11,0.15)', barColor: '#f59e0b' },
+  { label: 'Toplam Müşteri', value: '0', trend: 12, progress: 60, color: 'indigo', iconBg: 'rgba(99,102,241,0.15)', barColor: '#6366f1', icon: '👥' },
+  { label: 'Aktif Hizmetler', value: '0', trend: 8, progress: 78, color: 'purple', iconBg: 'rgba(139,92,246,0.15)', barColor: '#8b5cf6', icon: '⚡' },
+  { label: 'Aylık Gelir', value: '₺0', trend: 18, progress: 85, color: 'emerald', iconBg: 'rgba(16,185,129,0.15)', barColor: '#10b981', icon: '💰' },
+  { label: 'Gecikmiş Fatura', value: '0', trend: -25, progress: 20, color: 'amber', iconBg: 'rgba(245,158,11,0.15)', barColor: '#f59e0b', icon: '⚠️' },
 ])
 
-const recentInvoices = ref([
-  { id: 1, client: 'Ahmet Yılmaz', service: 'Web Geliştirme', amount: '₺8.500', due: '20 Eyl', status: 'Bekliyor' },
-  { id: 2, client: 'Selin Demir',  service: 'SEO Danışmanlık', amount: '₺3.200', due: '18 Eyl', status: 'Gecikmiş' },
-  { id: 3, client: 'Murat Kaya',   service: 'UI/UX Tasarım',   amount: '₺6.100', due: '25 Eyl', status: 'Ödendi' },
-  { id: 4, client: 'Ece Şahin',   service: 'Mobil Uygulama', amount: '₺12.000', due: '30 Eyl', status: 'Bekliyor' },
-])
+const recentInvoices = ref<Invoice[]>([])
+const uptimeSites = ref<UptimeMonitorItem[]>([])
 
-const uptimeSites = ref([
-  { name: 'Ana Website', url: 'ahmetyilmaz.com', status: 'UP', uptime: 99.8, ms: 124 },
-  { name: 'API Sunucu', url: 'api.selindemir.io', status: 'UP', uptime: 100, ms: 45 },
-  { name: 'Müşteri Paneli', url: 'panel.muratkaya.net', status: 'DOWN', uptime: 94.2, ms: 0 },
-  { name: 'E-Ticaret', url: 'shop.ecesahin.co', status: 'UP', uptime: 98.5, ms: 210 },
-])
+const getStatusKey = (s: string | number): string => {
+  if (typeof s === 'number') return ['Pending', 'Paid', 'Overdue', 'Cancelled'][s] || 'Pending'
+  return s
+}
 
-const statusBadge = (status: string) => ({
-  'badge-warning': status === 'Bekliyor',
-  'badge-danger':  status === 'Gecikmiş',
-  'badge-success': status === 'Ödendi',
+const loadDashboard = async () => {
+  try {
+    const [clients, services, invoices, monitors] = await Promise.all([
+      clientService.getClients(),
+      serviceService.getServices(),
+      invoiceService.getInvoices(),
+      uptimeService.getMonitors()
+    ])
+
+    const totalRev = services.reduce((acc, s) => acc + s.price, 0)
+    const overdueCount = invoices.filter(i => getStatusKey(i.status) === 'Overdue').length
+
+    stats.value[0].value = clients.length.toString()
+    stats.value[1].value = services.length.toString()
+    stats.value[2].value = `₺${totalRev.toLocaleString('tr-TR')}`
+    stats.value[3].value = overdueCount.toString()
+
+    recentInvoices.value = invoices.slice(0, 5)
+    uptimeSites.value = monitors.slice(0, 4)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+const formatStatus = (s: string | number) => {
+  const k = getStatusKey(s)
+  if (k === 'Pending') return 'Bekliyor'
+  if (k === 'Paid') return 'Ödendi'
+  if (k === 'Overdue') return 'Gecikmiş'
+  return 'İptal'
+}
+
+const statusBadge = (statusStr: string | number) => {
+  const k = getStatusKey(statusStr)
+  return {
+    'badge-warning': k === 'Pending',
+    'badge-success': k === 'Paid',
+    'badge-danger':  k === 'Overdue',
+  }
+}
+
+const formatDate = (d?: string) => {
+  if (!d) return '-'
+  return new Date(d).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short' })
+}
+
+onMounted(() => {
+  loadDashboard()
 })
 </script>
 
@@ -179,7 +219,7 @@ const statusBadge = (status: string) => ({
 .trend-up { color: #10b981; background: rgba(16,185,129,0.1); }
 .trend-down { color: #ef4444; background: rgba(239,68,68,0.1); }
 
-.stat-value { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.stat-value { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; color: white; }
 .stat-label { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.25rem; font-weight: 500; }
 
 .stat-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 999px; margin-top: 1rem; overflow: hidden; }

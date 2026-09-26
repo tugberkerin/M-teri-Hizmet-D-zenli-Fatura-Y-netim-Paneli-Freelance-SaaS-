@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClientPulse.WebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+83a1be9efa8b6cf43e41e522c250252849f7e088")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6021726b70d23e87d75d816db5f3a6a7b79adfff")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClientPulse.WebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClientPulse.WebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
